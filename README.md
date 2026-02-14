@@ -38,3 +38,10 @@ Next.js toy project.
 
 - PR template: `.github/pull_request_template.md`
 - Issue templates: `.github/ISSUE_TEMPLATE/*`
+
+## PR Auto Review
+
+- Workflow: `.github/workflows/pr-review.yml`
+- `reviewdog` runs ESLint and leaves inline PR comments
+- AI reviewer posts a summary comment using OpenAI Responses API
+- Required secret for AI reviewer: `OPENAI_API_KEY`

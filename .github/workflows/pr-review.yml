@@ -1,0 +1,154 @@
+name: PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: pr-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  reviewdog:
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: ESLint review (reviewdog)
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          eslint_flags: '.'
+          level: warning
+          fail_level: error
+          filter_mode: added
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Tests
+        run: pnpm test
+
+  ai-review:
+    if: ${{ !github.event.pull_request.draft && secrets.OPENAI_API_KEY != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build PR diff
+        id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --unified=0 "$BASE_SHA" "$HEAD_SHA" > pr.diff
+          # Keep prompt size bounded for API reliability.
+          head -c 120000 pr.diff > pr-trimmed.diff
+          {
+            echo "diff<<EOF"
+            cat pr-trimmed.diff
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Generate AI review
+        id: ai
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DIFF: ${{ steps.diff.outputs.diff }}
+        run: |
+          payload="$(jq -n \
+            --arg diff "$DIFF" \
+            '{
+              model: "gpt-5-mini",
+              input: [
+                {
+                  role: "system",
+                  content: "You are a strict code reviewer. Focus on bugs, regressions, security risks, and missing tests. Keep it concise. If no important issues are found, say exactly: No critical issues found."
+                },
+                {
+                  role: "user",
+                  content: ("Review this pull request diff and provide findings with file paths:\n\n" + $diff)
+                }
+              ]
+            }'
+          )"
+
+          response="$(curl -fsS https://api.openai.com/v1/responses \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$payload")"
+
+          review_text="$(echo "$response" | jq -r '.output_text // ([.output[]?.content[]? | select(.type == "output_text") | .text] | join("\n"))')"
+
+          {
+            echo "body<<EOF"
+            echo "<!-- codex-ai-review -->"
+            echo "### AI Review (OpenAI)"
+            echo
+            echo "$review_text"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upsert PR comment
+        uses: actions/github-script@v7
+        env:
+          BODY: ${{ steps.ai.outputs.body }}
+        with:
+          script: |
+            const marker = "<!-- codex-ai-review -->";
+            const body = process.env.BODY;
+            if (!body || !body.includes(marker)) {
+              core.setFailed("AI review body was empty.");
+              return;
+            }
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+            const existing = comments.find((c) =>
+              c.user?.type === "Bot" && c.body?.includes(marker)
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
