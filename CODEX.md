@@ -5,6 +5,7 @@ This document defines the default execution pattern for this repository.
 ## 1) Branch Strategy
 
 - Never work directly on `main`.
+- New branches must always be created from up-to-date `main` (`git fetch origin main` + `git pull --ff-only origin main`).
 - Use one of:
   - `feature/<short-desc>`
   - `chore/<short-desc>`

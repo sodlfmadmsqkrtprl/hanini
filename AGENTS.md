@@ -83,6 +83,7 @@ A frontend task is done only if all conditions are true:
 ## 10) PR Contract
 
 - Branch must be non-`main`.
+- New branches must start from latest `main` (`git fetch origin main` then `git pull --ff-only origin main`).
 - Conventional Commit required.
 - PR description must include:
   - what changed
