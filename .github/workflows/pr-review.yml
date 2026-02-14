@@ -1,6 +1,14 @@
 name: PR Review
 
 on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'chore/**'
+      - 'fix/**'
+      - 'docs/**'
+      - 'refactor/**'
+      - 'test/**'
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
