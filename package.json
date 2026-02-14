@@ -14,6 +14,8 @@
     "pr": "bash ./scripts/pr_create.sh",
     "ship": "bash ./scripts/ship.sh",
     "deploy": "bash ./scripts/deploy-pages.sh",
+    "deploy:pr": "bash ./scripts/deploy-pr.sh",
+    "release:pr": "bash ./scripts/release-pr.sh",
     "prepare": "husky"
   },
   "dependencies": {

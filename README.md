@@ -47,6 +47,10 @@ Next.js toy project.
 - `pnpm ship -- [base] [branch-if-on-main]` Auto-generate commit/PR message and run commit+PR
 - `pnpm deploy` Trigger GitHub Pages deploy workflow (`main` by default)
 - `pnpm deploy -- <branch>` Trigger deploy workflow for a specific branch
+- `pnpm deploy:pr` Trigger deploy for current branch PR
+- `pnpm deploy:pr -- <pr-number>` Trigger deploy for a specific PR
+- `pnpm release:pr` Check pass -> merge current branch PR to `main` -> deploy `main`
+- `pnpm release:pr -- <pr-number> [squash|merge|rebase]` Release specific PR
 
 ## Git Workflow
 
@@ -118,4 +122,10 @@ pnpm pr -- "feat: add dashboard filters" "- Add filter UI\n- Add tests"
 
 # AI message generation + commit + PR
 pnpm ship
+
+# Deploy current PR branch
+pnpm deploy:pr
+
+# Release PR (checks -> merge main -> deploy main)
+pnpm release:pr
 ```
