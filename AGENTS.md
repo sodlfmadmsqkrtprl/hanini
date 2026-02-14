@@ -28,6 +28,7 @@ For every change:
    - `pnpm lint`
    - `pnpm typecheck`
    - `pnpm test`
+6. If behavior, domain logic, or bug-fix paths changed, add or update tests in the same PR.
 
 ## 4) Definition of Done (DoD)
 
@@ -37,6 +38,7 @@ A frontend task is done only if all conditions are true:
 - No obvious accessibility regression (semantic markup, keyboard path, focus visibility).
 - No unnecessary rerender/bundle regression introduced.
 - Tests and quality gates pass.
+- Required test coverage for changed behavior is added or updated.
 - Diff is minimal and coherent.
 
 ## 5) Architecture Rules

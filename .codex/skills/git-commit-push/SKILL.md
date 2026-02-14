@@ -18,8 +18,9 @@ Follow this workflow to commit and push changes safely with the project's branch
 - Prefer `chore/<short-desc>` for environment/tooling changes.
 
 4. Stage changes with `git add -A`.
-5. Create a commit with a clear message.
-6. Push with upstream tracking: `git push -u origin <branch>`.
+5. If behavior/logic changed, confirm tests were added or updated in the same diff.
+6. Create a commit with a clear message.
+7. Push with upstream tracking: `git push -u origin <branch>`.
 
 ## Preferred Commands
 
@@ -49,4 +50,5 @@ Behavior:
 ## Notes
 
 - If there are no changes to commit, stop and report.
+- If behavior changed without corresponding test updates, pause and add tests first.
 - If push fails, surface the error and suggest `git pull --rebase` only when needed.

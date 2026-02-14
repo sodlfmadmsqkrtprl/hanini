@@ -64,6 +64,12 @@ This document defines the default execution pattern for this repository.
 4. Push branch
 5. Confirm PR checks on GitHub
 
+## 6-1) Test Authoring Rule
+
+- If a change modifies behavior, business rules, state transitions, or fixes a bug, add/update tests in the same change set.
+- Prefer tests close to changed feature code and cover at least one success path plus relevant edge/error path.
+- Do not ship behavior changes with only manual verification unless explicitly approved.
+
 ## 7) Recovery Pattern
 
 - If checks fail:
@@ -115,6 +121,7 @@ Before commit, AI must verify:
 3. `pnpm lint`, `pnpm typecheck`, `pnpm test` pass locally.
 4. Error paths are explicit and testable.
 5. Naming/API shape is understandable without extra comments.
+6. Tests were added/updated when behavior changed.
 
 ## 12) PR Review Checklist
 

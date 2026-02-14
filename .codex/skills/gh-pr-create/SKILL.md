@@ -15,8 +15,9 @@ Create a PR from a conventional branch to `main` using GitHub CLI.
 - Must be on `feature/*`, `chore/*`, `fix/*`, `docs/*`, `refactor/*`, or `test/*` (not `main`).
 
 3. Ensure the branch is pushed: `git push -u origin <branch>`.
-4. Create PR targeting `main`.
-5. Return the PR URL to the user.
+4. If behavior/logic changed, verify tests were added or updated before PR creation.
+5. Create PR targeting `main`.
+6. Return the PR URL to the user.
 
 ## Preferred Commands
 
@@ -45,3 +46,4 @@ Behavior:
 
 - If `gh auth status` fails, run `gh auth login` first.
 - If there are uncommitted changes, stop and ask the user to commit.
+- If behavior changed but tests were not updated, request/perform test updates before opening PR.
