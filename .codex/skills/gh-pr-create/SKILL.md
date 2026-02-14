@@ -1,18 +1,18 @@
 ---
 name: gh-pr-create
-description: 'Create GitHub pull requests from feature/* branches to main using the gh CLI. Use when the user asks to open/create/submit a PR, or wants to publish a branch for review.'
+description: 'Create GitHub pull requests from conventional branches (feature/chore/fix/docs/refactor/test) to main using the gh CLI. Use when the user asks to open/create/submit a PR, or wants to publish a branch for review.'
 ---
 
 # GitHub PR Create
 
-Create a PR from a feature branch to `main` using GitHub CLI.
+Create a PR from a conventional branch to `main` using GitHub CLI.
 
 ## Workflow
 
 1. Confirm `gh` authentication: `gh auth status`.
 2. Confirm current branch and policy:
 
-- Must be on `feature/*` (not `main`).
+- Must be on `feature/*`, `chore/*`, `fix/*`, `docs/*`, `refactor/*`, or `test/*` (not `main`).
 
 3. Ensure the branch is pushed: `git push -u origin <branch>`.
 4. Create PR targeting `main`.
@@ -36,7 +36,7 @@ Use `scripts/pr_create.sh` for a consistent flow:
 
 Behavior:
 
-- Enforces `feature/*` branch.
+- Enforces conventional branch prefixes.
 - Pushes the current branch if needed.
 - Defaults base to `main`.
 - If title/body are omitted, generates them from branch name and commits.

@@ -16,15 +16,15 @@ fi
 
 if [[ "$current" == "main" ]]; then
   if [[ -z "$branch_arg" ]]; then
-    echo "On main. Provide a feature branch name: feature/<short-desc>."
+    echo "On main. Provide a branch name like feature/<desc> or chore/<desc>."
     exit 1
   fi
   git checkout -b "$branch_arg"
   current="$branch_arg"
 fi
 
-if [[ "$current" != feature/* ]]; then
-  echo "Branch must be feature/* (current: $current)."
+if [[ "$current" != feature/* && "$current" != chore/* && "$current" != fix/* && "$current" != docs/* && "$current" != refactor/* && "$current" != test/* ]]; then
+  echo "Branch must be feature/*, chore/*, fix/*, docs/*, refactor/*, or test/* (current: $current)."
   exit 1
 fi
 

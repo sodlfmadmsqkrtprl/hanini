@@ -21,12 +21,12 @@ if [[ -z "$current" ]]; then
 fi
 
 if [[ "$current" == "main" ]]; then
-  echo "On main. Switch to a feature/* branch before creating a PR."
+  echo "On main. Switch to a feature/*, chore/*, fix/*, docs/*, refactor/*, or test/* branch before creating a PR."
   exit 1
 fi
 
-if [[ "$current" != feature/* ]]; then
-  echo "Branch must be feature/* (current: $current)."
+if [[ "$current" != feature/* && "$current" != chore/* && "$current" != fix/* && "$current" != docs/* && "$current" != refactor/* && "$current" != test/* ]]; then
+  echo "Branch must be feature/*, chore/*, fix/*, docs/*, refactor/*, or test/* (current: $current)."
   exit 1
 fi
 
