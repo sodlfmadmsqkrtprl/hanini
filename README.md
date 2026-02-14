@@ -11,6 +11,28 @@ Next.js toy project.
 - Vitest + Testing Library
 - Husky + lint-staged + Commitlint
 
+## Frontend Defaults
+
+- Mobile-first UI with desktop verification
+- Accessibility baseline (semantic markup, keyboard reachability, focus visibility)
+- Required UI states: loading / empty / error
+- Keep presentational components separate from data/side-effect logic
+- Source of truth for detailed rules: `CODEX.md`
+
+## Project AI Setup
+
+- Primary project context files:
+  - `CODEX.md` (implementation rules and checklists)
+  - `README.md` (workflow and commands)
+- Before AI-assisted changes, provide clear intent in prompt:
+  - feature goal
+  - constraints (UI/UX, performance, accessibility)
+  - expected output files
+- For frontend tasks, require:
+  - mobile + desktop behavior
+  - loading/empty/error states
+  - keyboard accessibility and focus visibility
+
 ## Scripts
 
 - `pnpm dev` Start dev server

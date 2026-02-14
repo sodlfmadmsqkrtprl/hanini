@@ -123,3 +123,49 @@ Before commit, AI must verify:
 - Observability: Are failures diagnosable?
 - Test adequacy: Do tests cover changed behavior and edge cases?
 - Simplicity: Is there a simpler, lower-risk implementation?
+
+## 13) Frontend Defaults
+
+- Build mobile-first and verify desktop after.
+- Keep UI components presentational; move side effects/data logic to hooks or server boundaries.
+- Ensure accessibility baseline:
+  - Semantic elements first (`button`, `nav`, `main`, `label`).
+  - Keyboard reachable interactions.
+  - Visible focus states and sufficient color contrast.
+- Prefer predictable state:
+  - Local state for local UI concerns.
+  - Shared state only when actually cross-cutting.
+
+## 14) Frontend Anti-Patterns
+
+- Putting fetch/business logic directly inside large UI components.
+- Deep prop-drilling instead of introducing a clear boundary.
+- Using index as key for dynamic lists with mutations.
+- CSS overrides that depend on brittle DOM order.
+- Non-deterministic UI behavior caused by mixed server/client state.
+- Shipping UI without loading/empty/error states.
+
+## 15) Frontend Validation Checklist
+
+Before pushing frontend changes, verify:
+
+1. Core flow works on mobile width and desktop width.
+2. Loading/empty/error states are implemented.
+3. Keyboard navigation works for interactive elements.
+4. No obvious layout shift on first render.
+5. `pnpm lint`, `pnpm typecheck`, `pnpm test` all pass.
+
+## 16) Project Context Rules
+
+- Always prioritize repository-local context:
+  - `CODEX.md`
+  - `README.md`
+  - current `src/*` code and tests
+- Keep prompts task-specific:
+  - feature intent
+  - constraints (a11y, responsiveness, performance)
+  - expected files and acceptance criteria
+- For frontend implementation prompts, include:
+  - target viewport behavior (mobile-first + desktop)
+  - UI states (loading/empty/error)
+  - testing expectation (`pnpm test`)
