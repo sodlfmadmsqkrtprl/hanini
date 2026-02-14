@@ -19,6 +19,9 @@ if [[ "$current" == "main" ]]; then
     echo "On main. Provide a branch name like feature/<desc> or chore/<desc>."
     exit 1
   fi
+  echo "Syncing local main with origin/main before creating a new branch..."
+  git fetch origin main
+  git pull --ff-only origin main
   git checkout -b "$branch_arg"
   current="$branch_arg"
 fi

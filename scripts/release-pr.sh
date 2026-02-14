@@ -27,12 +27,17 @@ else
     echo "Not on a branch. Aborting."
     exit 1
   fi
-  if ! gh pr view --head "$branch" --json number >/dev/null 2>&1; then
+  pr_number="$(gh pr list --state open --head "$branch" --json number -q '.[0].number')"
+  if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
+    if gh pr view --head "$branch" --json number >/dev/null 2>&1; then
+      pr_number="$(gh pr view --head "$branch" --json number -q .number)"
+    fi
+  fi
+  if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
     echo "No open PR found for branch: $branch"
     echo "Use: pnpm release:pr -- <pr-number> [squash|merge|rebase]"
     exit 1
   fi
-  pr_number="$(gh pr view --head "$branch" --json number -q .number)"
 fi
 
 pr_json="$(gh pr view "$pr_number" --json number,url,state,isDraft,baseRefName,headRefName,statusCheckRollup)"

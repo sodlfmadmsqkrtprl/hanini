@@ -55,6 +55,7 @@ Next.js toy project.
 ## Git Workflow
 
 - Work on `feature/*`, `chore/*`, `fix/*`, `docs/*`, `refactor/*`, `test/*` branches
+- Always create a new branch from latest `main` (`git fetch origin main && git pull --ff-only origin main`)
 - Commit messages follow Conventional Commits
 - PRs target `main`
 - Prefer PR merge instead of direct push to `main` to keep review history
