@@ -43,6 +43,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Intentional checker fail test
+        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[fail-checker]') }}
+        run: |
+          echo "Intentional checker failure triggered by commit message."
+          exit 1
+
       - name: ESLint review (reviewdog)
         uses: reviewdog/action-eslint@v1
         with:
@@ -108,11 +114,11 @@ jobs:
               input: [
                 {
                   role: "system",
-                  content: "You are a strict code reviewer. Focus on bugs, regressions, security risks, and missing tests. Keep it concise. If no important issues are found, say exactly: No critical issues found."
+                  content: "당신은 엄격한 코드 리뷰어입니다. 버그, 회귀 위험, 보안 위험, 테스트 누락에 집중하세요. 답변은 반드시 한국어로 간결하게 작성하세요. 중요한 이슈가 없으면 정확히 '치명적인 이슈를 찾지 못했습니다.'라고만 답하세요."
                 },
                 {
                   role: "user",
-                  content: ("Review this pull request diff and provide findings with file paths:\n\n" + $diff)
+                  content: ("아래 PR diff를 리뷰하고 파일 경로를 포함해 이슈를 정리해 주세요.\n\n" + $diff)
                 }
               ]
             }'
@@ -128,7 +134,7 @@ jobs:
           {
             echo "body<<EOF"
             echo "<!-- codex-ai-review -->"
-            echo "### AI Review (OpenAI)"
+            echo "### AI 리뷰 (OpenAI)"
             echo
             echo "$review_text"
             echo "EOF"
