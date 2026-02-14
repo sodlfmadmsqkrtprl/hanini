@@ -67,6 +67,7 @@ Next.js toy project.
 - PR template: `.github/pull_request_template.md`
 - Issue templates: `.github/ISSUE_TEMPLATE/*`
 - Working spec: `CODEX.md`
+- Agent spec: `AGENTS.md`
 
 ## PR Auto Review
 
