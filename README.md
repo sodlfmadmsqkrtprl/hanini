@@ -52,6 +52,23 @@ Next.js toy project.
 - `pnpm release:pr` Check pass -> merge current branch PR to `main` -> deploy `main`
 - `pnpm release:pr -- <pr-number> [squash|merge|rebase]` Release specific PR
 
+## External API Keys (Content Discovery)
+
+To fetch category-related posts/videos from Google + YouTube, set these env values:
+
+```bash
+cp .env.example .env.local
+```
+
+- `NEXT_PUBLIC_GOOGLE_API_KEY`
+- `NEXT_PUBLIC_GOOGLE_CSE_ID`
+- `NEXT_PUBLIC_YOUTUBE_API_KEY`
+
+Security note:
+
+- This project is static-export based (`output: export`), so discovery fetch runs on client.
+- Restrict keys by HTTP referrer and quota in Google Cloud Console.
+
 ## Git Workflow
 
 - Work on `feature/*`, `chore/*`, `fix/*`, `docs/*`, `refactor/*`, `test/*` branches
