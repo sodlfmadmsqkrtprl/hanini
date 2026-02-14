@@ -38,9 +38,6 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Export
-        run: pnpm exec next export
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
