@@ -52,10 +52,6 @@ Next.js toy project.
 - Trigger: `pull_request` (`opened`, `synchronize`, `reopened`, `ready_for_review`)
 - `reviewdog` runs ESLint and leaves inline PR comments
 - `typecheck` and `test` run as PR checkers
-- AI reviewer posts a summary comment using OpenAI Responses API
-- AI review comment language: Korean
-- Required secret for AI reviewer: `OPENAI_API_KEY`
-- If `OPENAI_API_KEY` is not set, only AI review step is skipped
 
 ## GitHub Auth (gh CLI)
 

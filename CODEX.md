@@ -54,19 +54,8 @@ This document defines the default execution pattern for this repository.
   - ESLint reviewdog comment
   - `pnpm typecheck`
   - `pnpm test`
-  - AI PR review comment (Korean, if `OPENAI_API_KEY` exists)
 
-## 6) AI Review Requirements
-
-- Review language: Korean.
-- Priority order:
-  - Bugs/regressions
-  - Security risks
-  - Missing tests
-- If no major issue:
-  - `치명적인 이슈를 찾지 못했습니다.`
-
-## 7) Validation Pattern (Always)
+## 6) Validation Pattern (Always)
 
 1. `pnpm lint`
 2. `pnpm typecheck`
@@ -74,7 +63,7 @@ This document defines the default execution pattern for this repository.
 4. Push branch
 5. Confirm PR checks on GitHub
 
-## 8) Recovery Pattern
+## 7) Recovery Pattern
 
 - If checks fail:
   - Fix code
@@ -85,7 +74,7 @@ This document defines the default execution pattern for this repository.
   - `gh auth login -h github.com -p https -w`
   - `gh auth status`
 
-## 9) Anti-Patterns (Do Not Introduce)
+## 8) Anti-Patterns (Do Not Introduce)
 
 - Hidden side effects in render paths or utility functions.
 - `any` type without a clear boundary reason.
@@ -98,7 +87,7 @@ This document defines the default execution pattern for this repository.
 - Ambiguous names (`data`, `temp`, `value`) for domain-critical fields.
 - Skipping tests for bug fixes or behavior changes.
 
-## 10) Code Quality Rules
+## 9) Code Quality Rules
 
 - Prefer small pure functions over large stateful blocks.
 - Keep one source of truth for domain rules; avoid copied condition trees.
@@ -109,14 +98,14 @@ This document defines the default execution pattern for this repository.
 - Keep diffs minimal: solve root cause, avoid unrelated formatting churn.
 - Add/adjust tests whenever behavior changes.
 
-## 11) Naming & Structure
+## 10) Naming & Structure
 
 - Use intention-revealing names (`billingCycleStart`, `isEligible`).
 - Group by feature/domain first, then by technical layer.
 - Keep files cohesive; split when a file has mixed responsibilities.
 - Prefer stable module boundaries over deep cross-imports.
 
-## 12) AI Implementation Checklist
+## 11) AI Implementation Checklist
 
 Before commit, AI must verify:
 
@@ -126,7 +115,7 @@ Before commit, AI must verify:
 4. Error paths are explicit and testable.
 5. Naming/API shape is understandable without extra comments.
 
-## 13) PR Review Checklist
+## 12) PR Review Checklist
 
 - Correctness: Does the change match intended behavior?
 - Regression risk: Could existing flow break?
