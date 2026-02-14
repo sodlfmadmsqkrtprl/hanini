@@ -110,12 +110,19 @@ jobs:
             }'
           )"
 
-          response="$(curl -fsS https://api.openai.com/v1/responses \
+          http_code="$(curl -sS -o response.json -w "%{http_code}" https://api.openai.com/v1/responses \
             -H "Authorization: Bearer $OPENAI_API_KEY" \
             -H "Content-Type: application/json" \
             -d "$payload")"
 
-          review_text="$(echo "$response" | jq -r '.output_text // ([.output[]?.content[]? | select(.type == "output_text") | .text] | join("\n"))')"
+          if [ "$http_code" -ge 400 ]; then
+            review_text="AI 리뷰 호출이 일시적으로 실패했습니다. (HTTP ${http_code}) 잠시 후 다시 푸시하거나 재실행해 주세요."
+          else
+            review_text="$(jq -r '.output_text // ([.output[]?.content[]? | select(.type == "output_text") | .text] | join("\n"))' response.json)"
+            if [ -z "$review_text" ] || [ "$review_text" = "null" ]; then
+              review_text="AI 리뷰 결과가 비어 있습니다. 수동 리뷰를 진행해 주세요."
+            fi
+          fi
 
           {
             echo "body<<EOF"
