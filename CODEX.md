@@ -84,3 +84,53 @@ This document defines the default execution pattern for this repository.
   - `gh auth logout -h github.com -u <account>`
   - `gh auth login -h github.com -p https -w`
   - `gh auth status`
+
+## 9) Anti-Patterns (Do Not Introduce)
+
+- Hidden side effects in render paths or utility functions.
+- `any` type without a clear boundary reason.
+- Dead code, unused variables, commented-out legacy blocks.
+- Broad `catch` that swallows errors without context/logging.
+- Silent fallback behavior that hides failures from users/operators.
+- Large PRs mixing unrelated concerns (feature + refactor + tooling).
+- Hardcoded secrets, tokens, endpoints, or environment-specific values.
+- Duplicate business logic across components/hooks/utils.
+- Ambiguous names (`data`, `temp`, `value`) for domain-critical fields.
+- Skipping tests for bug fixes or behavior changes.
+
+## 10) Code Quality Rules
+
+- Prefer small pure functions over large stateful blocks.
+- Keep one source of truth for domain rules; avoid copied condition trees.
+- Validate inputs at boundaries (API, form, env, external response).
+- Fail fast with actionable error messages.
+- Use explicit types for public interfaces and return values.
+- Keep component responsibilities narrow (UI vs state vs side effects).
+- Keep diffs minimal: solve root cause, avoid unrelated formatting churn.
+- Add/adjust tests whenever behavior changes.
+
+## 11) Naming & Structure
+
+- Use intention-revealing names (`billingCycleStart`, `isEligible`).
+- Group by feature/domain first, then by technical layer.
+- Keep files cohesive; split when a file has mixed responsibilities.
+- Prefer stable module boundaries over deep cross-imports.
+
+## 12) AI Implementation Checklist
+
+Before commit, AI must verify:
+
+1. Scope is single-purpose and PR-ready.
+2. No anti-pattern from section 9 is introduced.
+3. `pnpm lint`, `pnpm typecheck`, `pnpm test` pass locally.
+4. Error paths are explicit and testable.
+5. Naming/API shape is understandable without extra comments.
+
+## 13) PR Review Checklist
+
+- Correctness: Does the change match intended behavior?
+- Regression risk: Could existing flow break?
+- Security: Any injection, auth, secret, or permission issue?
+- Observability: Are failures diagnosable?
+- Test adequacy: Do tests cover changed behavior and edge cases?
+- Simplicity: Is there a simpler, lower-risk implementation?
