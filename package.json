@@ -10,6 +10,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest --run",
     "test:watch": "vitest",
+    "cp": "bash ./scripts/commit_push.sh",
+    "pr": "bash ./scripts/pr_create.sh",
+    "ship": "bash ./scripts/ship.sh",
+    "deploy": "bash ./scripts/deploy-pages.sh",
     "prepare": "husky"
   },
   "dependencies": {
