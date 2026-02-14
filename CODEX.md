@@ -125,6 +125,22 @@ This document defines the default execution pattern for this repository.
 - Keep files cohesive; split when a file has mixed responsibilities.
 - Prefer stable module boundaries over deep cross-imports.
 
+### 10-1) Next Frontend Directory Contract (Mandatory)
+
+- Route definitions belong in `src/app/page/*`.
+  - Example: `src/app/page/hobby/index.tsx`, `src/app/page/hobby/[slug].tsx`
+- App Router entry files (`src/app/**/page.tsx`) must stay thin and delegate to modules.
+  - Example: `src/app/page.tsx` imports and renders from `src/app/page/hobby`.
+- Page implementation belongs in `src/app/page-modules/<domain>/*`.
+- Inside each page module, separate by responsibility:
+  - `components/`
+  - `sections/`
+  - `utils/`
+  - `constants/`
+  - `types/`
+  - `api/`
+- Avoid placing mixed-purpose logic (routing + UI + API orchestration) in a single file.
+
 ## 11) AI Implementation Checklist
 
 Before commit, AI must verify:

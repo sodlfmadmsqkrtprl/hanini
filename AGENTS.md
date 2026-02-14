@@ -56,6 +56,23 @@ A frontend task is done only if all conditions are true:
 - Avoid `any` unless boundary constraints require it.
 - Do not duplicate domain rules across components/hooks/utils.
 
+### Next.js Directory Structure (Mandatory)
+
+- Keep route entries under `src/app/page/*`.
+  - Example: `src/app/page/hobby/index.tsx`, `src/app/page/hobby/[slug].tsx`
+- Keep App Router route handlers in `src/app/*/page.tsx` as thin entry points.
+  - Example: `src/app/page.tsx` should delegate to page module exports.
+- Keep page implementation details under `src/app/page-modules/*`.
+  - Example feature module tree:
+    - `components/`
+    - `sections/`
+    - `utils/`
+    - `constants/`
+    - `types/`
+    - `api/`
+- Do not mix routing concerns and feature implementation in one file.
+- When adding a new page, first create the page route shell, then implement module files in `page-modules`.
+
 ## 6) Styling Rules
 
 - Preserve established visual language unless redesign is explicitly requested.

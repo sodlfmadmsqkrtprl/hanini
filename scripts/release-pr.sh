@@ -1,15 +1,50 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v gh >/dev/null 2>&1; then
-  echo "gh CLI not found. Install GitHub CLI first."
-  exit 1
-fi
+require_gh_ready() {
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "gh CLI not found. Install GitHub CLI first."
+    exit 1
+  fi
 
-if ! gh auth status >/dev/null 2>&1; then
+  if gh auth status >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if command -v curl >/dev/null 2>&1; then
+    if ! curl -fsS --connect-timeout 5 https://api.github.com >/dev/null 2>&1; then
+      echo "GitHub API is unreachable (network/VPN/firewall issue)."
+      echo "Please check network access to api.github.com and retry."
+      exit 1
+    fi
+  fi
+
   echo "gh auth is not ready. Run: gh auth login -h github.com -p https -w"
   exit 1
-fi
+}
+
+gh_retry() {
+  local attempt=1
+  local max_attempts=3
+  local delay=2
+
+  while true; do
+    if "$@"; then
+      return 0
+    fi
+
+    if [[ "$attempt" -ge "$max_attempts" ]]; then
+      return 1
+    fi
+
+    echo "GitHub API call failed. Retrying in ${delay}s... ($attempt/$max_attempts)" >&2
+    sleep "$delay"
+    attempt=$((attempt + 1))
+    delay=$((delay * 2))
+  done
+}
+
+require_gh_ready
 
 pr_arg="${1:-}"
 merge_method="${2:-squash}" # squash|merge|rebase
@@ -27,10 +62,10 @@ else
     echo "Not on a branch. Aborting."
     exit 1
   fi
-  pr_number="$(gh pr list --state open --head "$branch" --json number -q '.[0].number')"
+  pr_number="$(gh_retry gh pr list --state open --head "$branch" --json number -q '.[0].number')"
   if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
-    if gh pr view --head "$branch" --json number >/dev/null 2>&1; then
-      pr_number="$(gh pr view --head "$branch" --json number -q .number)"
+    if gh_retry gh pr view --head "$branch" --json number >/dev/null 2>&1; then
+      pr_number="$(gh_retry gh pr view --head "$branch" --json number -q .number)"
     fi
   fi
   if [[ -z "$pr_number" || "$pr_number" == "null" ]]; then
@@ -40,7 +75,7 @@ else
   fi
 fi
 
-pr_json="$(gh pr view "$pr_number" --json number,url,state,isDraft,baseRefName,headRefName,statusCheckRollup)"
+pr_json="$(gh_retry gh pr view "$pr_number" --json number,url,state,isDraft,baseRefName,headRefName,statusCheckRollup)"
 
 state="$(echo "$pr_json" | jq -r .state)"
 is_draft="$(echo "$pr_json" | jq -r .isDraft)"
@@ -76,9 +111,9 @@ fi
 
 echo "Merging PR: $pr_url"
 case "$merge_method" in
-  squash) gh pr merge "$pr_number" --squash --delete-branch=false ;;
-  merge) gh pr merge "$pr_number" --merge --delete-branch=false ;;
-  rebase) gh pr merge "$pr_number" --rebase --delete-branch=false ;;
+  squash) gh_retry gh pr merge "$pr_number" --squash --delete-branch=false ;;
+  merge) gh_retry gh pr merge "$pr_number" --merge --delete-branch=false ;;
+  rebase) gh_retry gh pr merge "$pr_number" --rebase --delete-branch=false ;;
 esac
 
 echo "Merged PR #$pr_number to main. Triggering deploy..."
