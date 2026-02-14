@@ -111,14 +111,14 @@ jobs:
           )"
 
           http_code=""
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             http_code="$(curl -sS -o response.json -w "%{http_code}" https://api.openai.com/v1/responses \
               -H "Authorization: Bearer $OPENAI_API_KEY" \
               -H "Content-Type: application/json" \
               -d "$payload")"
             if [ "$http_code" = "429" ] || [ "$http_code" -ge 500 ]; then
-              if [ "$attempt" -lt 3 ]; then
-                sleep_seconds=$((attempt * 2))
+              if [ "$attempt" -lt 5 ]; then
+                sleep_seconds=$((2 ** attempt))
                 echo "OpenAI API transient error (HTTP ${http_code}), retrying in ${sleep_seconds}s..."
                 sleep "$sleep_seconds"
                 continue
