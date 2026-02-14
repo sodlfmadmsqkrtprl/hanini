@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   reviewdog:
-    if: ${{ !github.event.pull_request.draft }}
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -60,7 +60,7 @@ jobs:
         run: pnpm test
 
   ai-review:
-    if: ${{ !github.event.pull_request.draft && secrets.OPENAI_API_KEY != '' }}
+    if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -83,8 +83,20 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Check OpenAI key
+        id: has_key
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -n "$OPENAI_API_KEY" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Generate AI review
         id: ai
+        if: ${{ steps.has_key.outputs.enabled == 'true' }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DIFF: ${{ steps.diff.outputs.diff }}
@@ -123,6 +135,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Upsert PR comment
+        if: ${{ steps.ai.outcome == 'success' }}
         uses: actions/github-script@v7
         env:
           BODY: ${{ steps.ai.outputs.body }}
