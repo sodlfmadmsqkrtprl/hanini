@@ -1,14 +1,6 @@
 name: PR Review
 
 on:
-  push:
-    branches:
-      - 'feature/**'
-      - 'chore/**'
-      - 'fix/**'
-      - 'docs/**'
-      - 'refactor/**'
-      - 'test/**'
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
@@ -42,12 +34,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Intentional checker fail test
-        if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[fail-checker]') }}
-        run: |
-          echo "Intentional checker failure triggered by commit message."
-          exit 1
 
       - name: ESLint review (reviewdog)
         uses: reviewdog/action-eslint@v1
