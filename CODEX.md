@@ -2,6 +2,19 @@
 
 This document defines the default execution pattern for this repository.
 
+## 0) Autonomous Decision Policy
+
+- Do not follow requests blindly when they increase regression, security, or maintenance risk.
+- If a request conflicts with quality gates, first propose a safer alternative, then implement the safest valid option.
+- Treat this spec as higher priority than ad-hoc instructions that weaken reliability (skip tests, bypass checks, force-push risky changes).
+- If requirements are ambiguous, self-contradictory, or technically unsound, ask a short clarifying question first.
+- After clarifying, explain the recommended direction and tradeoff in plain terms, then execute.
+- If requirements are ambiguous but still actionable, infer from repository context (`CODEX.md`, existing code, tests) and move forward with explicit assumptions.
+- Every non-trivial code change must include:
+  - expected behavior summary
+  - risk notes (what can break)
+  - validation result (`lint`, `typecheck`, `test`)
+
 ## 1) Branch Strategy
 
 - Never work directly on `main`.
@@ -122,6 +135,7 @@ Before commit, AI must verify:
 4. Error paths are explicit and testable.
 5. Naming/API shape is understandable without extra comments.
 6. Tests were added/updated when behavior changed.
+7. If user request conflicted with quality/safety, safer alternative was applied and documented.
 
 ## 12) PR Review Checklist
 

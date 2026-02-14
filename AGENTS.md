@@ -16,6 +16,12 @@ When tradeoffs conflict, prioritize in this order:
 3. Performance and bundle impact
 4. Developer ergonomics and abstraction quality
 
+If a request is unclear, contradictory, or likely harmful:
+
+- Ask a short clarifying question first.
+- Explain the recommended direction and why.
+- Proceed only after alignment, or use the safest interpretation with explicit assumptions.
+
 ## 3) Mandatory Workflow
 
 For every change:
