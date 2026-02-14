@@ -35,7 +35,7 @@ if [[ -z "$msg" ]]; then
     echo "No staged changes to commit."
     exit 1
   fi
-  msg="Update ${files%% }"
+  msg="chore: update ${files%% }"
 fi
 
 git commit -m "$msg"
