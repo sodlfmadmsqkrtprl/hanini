@@ -1,80 +1,95 @@
 # AGENTS.md
 
-This file defines how AI agents should work in this repository.
+Frontend execution spec for this repository (Next.js + TypeScript + Tailwind).
 
-## Scope
+## 1) Primary Goal
 
-- This project is frontend-first (Next.js + TypeScript + Tailwind).
-- Optimize for product UI quality, accessibility, and predictable behavior.
+- Ship production-safe frontend changes with predictable UX.
+- Optimize for correctness, accessibility, and maintainability over novelty.
 
-## Execution Rules
+## 2) Priority Order
 
-- Make small, focused changes with clear intent.
-- Avoid mixing unrelated concerns in one change.
-- Prefer updating existing files/patterns over introducing new abstractions.
-- Keep architecture simple unless complexity is required.
+When tradeoffs conflict, prioritize in this order:
 
-## Frontend Architecture
+1. Correctness and regressions
+2. Accessibility and UX clarity
+3. Performance and bundle impact
+4. Developer ergonomics and abstraction quality
 
-- Keep presentational UI separate from side effects and data orchestration.
-- Prefer feature-oriented grouping over flat utility sprawl.
-- Keep component props explicit and typed.
-- Avoid `any`; use narrow types and discriminated unions when useful.
-- Do not duplicate domain logic across components/hooks.
+## 3) Mandatory Workflow
 
-## UX and Accessibility Baseline
+For every change:
 
-- Build mobile-first, then validate desktop behavior.
-- Provide loading, empty, error, and success states for user-facing flows.
-- Use semantic HTML elements first.
-- Ensure keyboard navigation for all interactive controls.
-- Keep visible focus styles and acceptable contrast.
+1. Keep scope single-purpose.
+2. Reuse existing project patterns before introducing new abstractions.
+3. Include loading, empty, and error states when behavior changes.
+4. Validate mobile first, then desktop.
+5. Run:
+   - `pnpm lint`
+   - `pnpm typecheck`
+   - `pnpm test`
 
-## Performance Baseline
+## 4) Definition of Done (DoD)
 
-- Avoid unnecessary rerenders from unstable props/closures.
-- Use dynamic imports only where they improve real UX.
-- Avoid large client bundles for static or server-renderable content.
-- Keep image/media usage optimized (`next/image` where appropriate).
+A frontend task is done only if all conditions are true:
 
-## Styling Rules
+- Behavior matches requested intent.
+- No obvious accessibility regression (semantic markup, keyboard path, focus visibility).
+- No unnecessary rerender/bundle regression introduced.
+- Tests and quality gates pass.
+- Diff is minimal and coherent.
 
-- Follow existing design language and utility conventions.
-- Avoid brittle selector coupling and DOM-order-dependent CSS.
-- Prefer reusable UI primitives for repeated patterns.
+## 5) Architecture Rules
 
-## Testing and Validation
+- Keep presentation and side effects separate.
+  - UI components: rendering and interactions
+  - hooks/services: orchestration, effects, data flow
+- Keep props explicit and typed.
+- Avoid `any` unless boundary constraints require it.
+- Do not duplicate domain rules across components/hooks/utils.
 
-Before finalizing changes, run:
+## 6) Styling Rules
 
-1. `pnpm lint`
-2. `pnpm typecheck`
-3. `pnpm test`
+- Preserve established visual language unless redesign is explicitly requested.
+- Prefer reusable primitives and composable utility classes.
+- Avoid brittle CSS that depends on DOM order or deep selectors.
 
-For UI behavior changes, verify:
+## 7) Accessibility and UX Baseline
 
-1. Mobile viewport behavior
-2. Desktop viewport behavior
-3. Keyboard and focus behavior
-4. Empty/loading/error states
+- Semantic elements first (`button`, `label`, `main`, `nav`).
+- Every interactive element must be keyboard reachable.
+- Focus should remain visible.
+- Ensure user-feedback states:
+  - loading
+  - empty
+  - error
+  - success (when relevant)
 
-## Git and PR Conventions
+## 8) Performance Baseline
 
-- Work on non-`main` branches only.
-- Use Conventional Commit messages.
-- Keep PR title and body aligned with actual diff.
-- Include what changed, why, and how it was validated.
+- Avoid unstable callbacks/props that trigger avoidable rerenders.
+- Use dynamic import only with a measurable UX benefit.
+- Prefer server-renderable content when possible.
+- Use optimized media handling (`next/image` where applicable).
 
-## Anti-Patterns to Avoid
+## 9) Anti-Patterns (Blockers)
 
-- Large god-components with mixed responsibilities
-- Hidden side effects in rendering paths
+- God-components mixing UI/data/business logic
 - Silent error swallowing
-- Unused code and dead branches
-- Index keys in mutable list rendering
-- Shipping without tests for behavior changes
+- Unused code or dead branches in final diff
+- Index keys on mutable lists
+- Large mixed-purpose PRs
 
-## Priority on Conflict
+## 10) PR Contract
 
-- Follow this file for frontend execution behavior.
-- Keep consistency with `CODEX.md` and `README.md`.
+- Branch must be non-`main`.
+- Conventional Commit required.
+- PR description must include:
+  - what changed
+  - why
+  - how validated
+
+## 11) Source of Truth
+
+- This file governs frontend execution behavior.
+- Keep consistent with `CODEX.md` and `README.md`.
