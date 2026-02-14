@@ -32,6 +32,7 @@ Next.js toy project.
 - `pre-commit`: lint-staged + typecheck
 - `commit-msg`: commitlint
 - `pre-push`: tests
+- GitHub Pages deploys on pushes to `main` via `.github/workflows/gh-pages.yml`
 
 ## Templates
 
